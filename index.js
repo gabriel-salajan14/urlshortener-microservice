@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const dns = require('dns');
 const app = express();
 
 // Basic Configuration
@@ -30,15 +31,27 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/api/shorturl', (req, res) => {
   const originalUrl = req.body.url;
 
-  if (!isValidUrl(originalUrl)) {
-    return res.json({ error: 'invalid url' });
+  if (originalUrl === null || originalUrl === '') { 
+    return res.json({ error: 'invalid url' }); 
   }
 
-  urlDatabase.push({ original_url: originalUrl, short_url: id });
+  //url should contains : http:// or https://
+  const domain = originalUrl.match(/^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/?\n]+)/igm);
+  //search a string with regular expr, and replace the string -> delete https://
+  const param = domain[0].replace(/^https?:\/\//i, "");
 
-  return res.json({
-    original_url: originalUrl,
-    short_url: id++
+  //Validate the url
+  dns.lookup(param, (err) => {
+    if (err) {
+      return res.json({ error: 'invalid hostname' });
+    }
+    else {
+      urlDatabase.push({ original_url: originalUrl, short_url: id });
+      return res.json({
+        original_url: originalUrl,
+        short_url: id++
+      });
+    }
   });
 });
 
