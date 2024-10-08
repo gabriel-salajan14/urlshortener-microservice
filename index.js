@@ -20,12 +20,6 @@ app.get('/', function(req, res) {
 let urlDatabase = [];
 let id = 1; // Simple ID to generate short URLs
 
-// Helper function to validate URLs
-const isValidUrl = (inputUrl) => {
-  const urlPattern = /^https?:\/\/(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+\/?$/;
-  return urlPattern.test(inputUrl);
-};
-
 // POST route to create a shortened URL
 app.use(express.urlencoded({ extended: true }));
 app.post('/api/shorturl', (req, res) => {
