@@ -37,7 +37,7 @@ app.post('/api/shorturl', (req, res) => {
   //Validate the url
   dns.lookup(param, (err) => {
     if (err) {
-      return res.json({ error: 'invalid hostname' });
+      return res.json({ error: 'invalid url' });
     }
     else {
       urlDatabase.push({ original_url: originalUrl, short_url: id });
