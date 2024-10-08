@@ -28,7 +28,6 @@ const isValidUrl = (inputUrl) => {
 // POST route to create a shortened URL
 app.use(express.urlencoded({ extended: true }));
 app.post('/api/shorturl', (req, res) => {
-  console.log(req.body);
   const originalUrl = req.body.url;
 
   if (!isValidUrl(originalUrl)) {
@@ -52,9 +51,9 @@ app.get('/api/shorturl/:short_url', (req, res) => {
 
   if (urlEntry) {
     // Redirect to the original URL
-    res.redirect(urlEntry.original_url);
+    return res.redirect(urlEntry.original_url);
   } else {
-    res.json({ error: 'No short URL found' });
+    return res.json({ error: 'invalid url' });
   }
 });
 
